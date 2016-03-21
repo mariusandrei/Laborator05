@@ -1,12 +1,15 @@
 package ro.pub.cs.systems.eim.lab05.startedserviceactivity.view;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 import ro.pub.cs.systems.eim.lab05.startedserviceactivity.R;
+import ro.pub.cs.systems.eim.lab05.startedserviceactivity.general.Constants;
 
 public class StartedServiceActivity extends Activity {
 	
@@ -22,24 +25,29 @@ public class StartedServiceActivity extends Activity {
         messageTextView = (TextView)findViewById(R.id.message_text_view);
 
         // TODO: exercise 7a - create an instance of the StartedServiceBroadcastReceiver
+       startedServiceBroadcastReceiver = new StartedServiceBroadcastReceiver(messageTextView);
 
         // TODO: exercise 7b - create an instance of the IntentFilter
         // with the corresponding actions of the broadcast intents
-
+       startedServiceIntentFilter = new IntentFilter();
+       startedServiceIntentFilter.addAction(Constants.ACTION_STRING);
         // TODO: exercise 7d - start the service
+       Intent intent = new Intent();
+       intent.setComponent(new ComponentName("ro.pub.cs.systems.eim.lab05.startedservice", "ro.pub.cs.systems.eim.lab05.startedservice.service.StartedService"));
+       startService(intent);
 	}
 
     @Override
     protected void onResume() {
         super.onResume();
-
-        // TODO: exercise 7c - register the broadcast receiver for the intent filter actions
+        registerReceiver(startedServiceBroadcastReceiver, startedServiceIntentFilter);
+      
     }
 
     @Override
     protected void onPause() {
         // TODO: exercise 7c - unregister the broadcast receiver
-
+    	 unregisterReceiver(startedServiceBroadcastReceiver);
         super.onPause();
     }
 
